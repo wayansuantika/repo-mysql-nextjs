@@ -69,7 +69,7 @@
   font-size: 14px;
 }
 
-.ctas a {
+.ctas button {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -83,25 +83,34 @@
   font-weight: 500;
 }
 
-a.primary {
+button.primary {
   background: var(--text-primary);
   color: var(--background);
   gap: 8px;
 }
 
-a.secondary {
-  border-color: var(--button-secondary-border);
+.successBox,
+.errorBox {
+  margin-top: 20px;
+  border-radius: 12px;
+  padding: 16px;
+  border: 1px solid var(--button-secondary-border);
+}
+
+.successBox {
+  background: var(--button-secondary-hover);
+  color: var(--text-primary);
+}
+
+.errorBox {
+  background: var(--button-secondary-hover);
+  color: var(--text-primary);
 }
 
 /* Enable hover only on non-touch devices */
 @media (hover: hover) and (pointer: fine) {
-  a.primary:hover {
+  button.primary:hover {
     background: var(--button-primary-hover);
-    border-color: transparent;
-  }
-
-  a.secondary:hover {
-    background: var(--button-secondary-hover);
     border-color: transparent;
   }
 }

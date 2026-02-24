@@ -1,65 +1,56 @@
-import Image from "next/image";
+"use client";
+
+import { useState } from "react";
 import styles from "./page.module.css";
 
 export default function Home() {
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState(null);
+
+  async function handleTestConnection() {
+    setLoading(true);
+    setResult(null);
+
+    try {
+      const response = await fetch("/api/db-test");
+      const data = await response.json();
+      setResult({ ...data, status: response.status });
+    } catch (error) {
+      setResult({
+        ok: false,
+        message: "Request failed",
+        error: error.message,
+        status: 0,
+      });
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <div className={styles.page}>
       <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
         <div className={styles.intro}>
-          <h1>To get started, edit the page.js file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+          <h1>MySQL + Next.js Connection Test</h1>
+          <p>Click the button to verify your database connection from Next.js server API.</p>
         </div>
         <div className={styles.ctas}>
-          <a
+          <button
             className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            onClick={handleTestConnection}
+            disabled={loading}
           >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            {loading ? "Testing..." : "Test MySQL Connection"}
+          </button>
         </div>
+        {result && (
+          <div className={result.ok ? styles.successBox : styles.errorBox}>
+            <strong>{result.message}</strong>
+            <p>Status: {result.status}</p>
+            {result.serverTime && <p>Server Time: {String(result.serverTime)}</p>}
+            {result.error && <p>Error: {result.error}</p>}
+          </div>
+        )}
       </main>
     </div>
   );
