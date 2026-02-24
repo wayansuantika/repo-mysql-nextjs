@@ -11,11 +11,18 @@ export async function GET() {
       serverTime: result.now,
     });
   } catch (error) {
+    const errorDetails = {
+      code: error?.code ?? null,
+      errno: error?.errno ?? null,
+      sqlState: error?.sqlState ?? null,
+    };
+
     return NextResponse.json(
       {
         ok: false,
         message: "MySQL connection failed",
         error: error.message,
+        details: errorDetails,
       },
       { status: 500 },
     );
